@@ -8,7 +8,10 @@ from datetime import datetime
 
 class CursoList(Resource):
     def get(self):
-        return "Estudando API com FLASK"
+        cursos = curso_service.listar_cursos()
+        cs = curso_schema.CursoSchema(many=True)
+        return make_response(jsonify(cs.dump(cursos)), 200)
+
 
     def post(self):
         cs = curso_schema.CursoSchema()
