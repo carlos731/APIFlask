@@ -11,3 +11,8 @@ def listar_cursos():
     cursos = curso_model.Curso.query.all()
     return cursos
 
+def listar_curso_id(id):
+    curso = curso_model.Curso.query.filter_by(id=id).first()
+    return curso
+
+

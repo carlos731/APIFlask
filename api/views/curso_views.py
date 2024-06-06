@@ -12,7 +12,6 @@ class CursoList(Resource):
         cs = curso_schema.CursoSchema(many=True)
         return make_response(jsonify(cs.dump(cursos)), 200)
 
-
     def post(self):
         cs = curso_schema.CursoSchema()
         validate = cs.validate(request.json)
@@ -33,4 +32,19 @@ class CursoList(Resource):
             x = cs.dump(resultado)
             return make_response(jsonify(x), 201)
 
+class CursoDetails(Resource):
+    def get(self, id):
+        curso = curso_service.listar_curso_id(id)
+        if curso is None:
+            return make_response(jsonify("Curso não foi encontrado!"), 404)
+        cs = curso_schema.CursoSchema()
+        return make_response(jsonify(cs.dump(curso)), 200)
+
+    def put(selfself, id):
+        pass
+
+    def delete(self, id):
+        pass
+
 api.add_resource(CursoList, '/cursos')
+api.add_resource(CursoDetails, '/cursos/<int:id>')
