@@ -4,7 +4,6 @@ from ..schemas import formacao_schema
 from flask import request, make_response, jsonify
 from ..entidades import formacao
 from ..services import formacao_service
-from datetime import datetime
 
 class FormacaoList(Resource):
     def get(self):
