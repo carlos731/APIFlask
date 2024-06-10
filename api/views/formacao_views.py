@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from api import api
-from ..schemas import formacao_schema
+from ..schemas import formacao_schema, formacao_request_schema
 from flask import request, make_response, jsonify
 from ..entidades import formacao
 from ..services import formacao_service
@@ -12,7 +12,7 @@ class FormacaoList(Resource):
         return make_response(jsonify(fs.dump(formacoes)), 200)
 
     def post(self):
-        fs = formacao_schema.FormacaoSchema()
+        fs = formacao_request_schema.FormacaoRequestSchema()
         validate = fs.validate(request.json)
         if validate:
             return make_response(jsonify(validate), 400)
