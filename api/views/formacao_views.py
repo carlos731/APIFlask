@@ -3,7 +3,7 @@ from api import api
 from ..schemas import formacao_schema, formacao_request_schema
 from flask import request, make_response, jsonify
 from ..entidades import formacao
-from ..services import formacao_service
+from ..services import formacao_service, professor_service
 from ..paginate import paginate
 from ..models.formacao_model import Formacao
 
@@ -21,6 +21,16 @@ class FormacaoList(Resource):
             nome = request.json["nome"]
             descricao = request.json["descricao"]
             professores = request.json["professores"]
+
+            # Verificar se todos os IDs de professores existem
+            professores_existentes = professor_service.listar_professores()
+            professores_existentes_ids = [prof.id for prof in professores_existentes]
+
+            ids_invalidos = [prof_id for prof_id in professores if prof_id not in professores_existentes_ids]
+
+            if ids_invalidos:
+                return make_response(jsonify({"error": f"Professor com ID {ids_invalidos} não existe!"}), 400)
+
             nova_formacao = formacao.Formacao(
                 nome=nome,
                 descricao=descricao,
@@ -54,6 +64,16 @@ class FormacaoDetails(Resource):
             nome = request.json["nome"]
             descricao = request.json["descricao"]
             professores = request.json["professores"]
+
+            # verificar se todos os IDs de professores existem
+            professores_existentes = professor_service.listar_professores()
+            professores_existentes_ids = [prof.id for prof in professores_existentes]
+
+            ids_invalidos = [prof_id for prof_id in professores if prof_id not in professores_existentes_ids]
+
+            if ids_invalidos:
+                return make_response(jsonify({"error": f"Professor com ID {ids_invalidos} não existe!"}), 400)
+
             nova_formacao = formacao.Formacao(
                 nome=nome,
                 descricao=descricao,
