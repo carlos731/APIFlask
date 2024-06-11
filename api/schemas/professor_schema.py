@@ -6,7 +6,15 @@ class ProfessorSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = professor_model.Professor
         load_instance = True
-        fields = ("id", "nome", "idade")
+        fields = ("id", "nome", "idade", "_links")
 
     nome = fields.String(required=True)
     idade = fields.Integer(required=True)
+
+    _links = ma.Hyperlinks(
+        {
+            "get": ma.URLFor('professordetails', values=dict(id="<id>")),
+            "put": ma.URLFor('professordetails', values=dict(id="<id>")),
+            "delete": ma.URLFor('professordetails', values=dict(id="<id>"))
+        }
+    )
