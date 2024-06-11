@@ -5,12 +5,13 @@ from flask import request, make_response, jsonify
 from ..entidades import curso
 from ..services import curso_service, formacao_service
 from datetime import datetime
+from ..paginate import paginate
+from ..models.curso_model import Curso
 
 class CursoList(Resource):
     def get(self):
-        cursos = curso_service.listar_cursos()
         cs = curso_schema.CursoSchema(many=True)
-        return make_response(jsonify(cs.dump(cursos)), 200)
+        return paginate(Curso, cs)
 
     def post(self):
         cs = curso_schema.CursoSchema()

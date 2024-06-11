@@ -1,8 +1,8 @@
 from flask import request, url_for
 
 def paginate(model, schema):
-    page = int(request.args.get('page'), 1)
-    per_page = int(request.args.get('per_page'), 3)
+    page = int(request.args.get('page', 1))
+    per_page = int(request.args.get('per_page', 3))
     page_obj = model.query.paginate(page=page, per_page=per_page)
 
     next = url_for(
