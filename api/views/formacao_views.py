@@ -27,6 +27,10 @@ class FormacaoList(Resource):
                 professores=professores
             )
             resultado = formacao_service.cadastrar_formacao(nova_formacao)
+
+            # para mudar a response para formacao_schema e não ficar com formação_request_schema
+            fs = formacao_schema.FormacaoSchema()
+
             x = fs.dump(resultado)
             return make_response(jsonify(x), 201)
 
@@ -38,11 +42,11 @@ class FormacaoDetails(Resource):
         fs = formacao_schema.FormacaoSchema()
         return make_response(jsonify(fs.dump(formacao)), 200)
 
-    def put(selfself, id):
+    def put(self, id):
         formacao_bd = formacao_service.listar_formacao_id(id)
         if formacao_bd is None:
             return make_response(jsonify("Formacão não foi encontrada!"), 404)
-        fs = formacao_schema.FormacaoSchema()
+        fs = formacao_request_schema.FormacaoRequestSchema()
         validate = fs.validate(request.json)
         if validate:
             return make_response(jsonify(validate), 400)
@@ -57,6 +61,10 @@ class FormacaoDetails(Resource):
             )
             formacao_service.atualiza_formacao(formacao_bd, nova_formacao)
             formacao_atualizada = formacao_service.listar_formacao_id(id)
+
+            # para mudar a response para formacao_schema e não ficar com formação_request_schema
+            fs = formacao_schema.FormacaoSchema()
+
             return make_response(jsonify(fs.dump(formacao_atualizada)), 200)
 
     def delete(self, id):

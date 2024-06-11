@@ -25,9 +25,15 @@ def listar_formacao_id(id):
 def atualiza_formacao(formacao_anterior, formacao_novo):
     formacao_anterior.nome = formacao_novo.nome
     formacao_anterior.descricao = formacao_novo.descricao
+
+    # Limpar a lista de professores antes de adicionar os novos
+    formacao_anterior.professores = []
+
     for i in formacao_novo.professores:
         professor = listar_professor_id(i)
-        formacao_anterior.professores.append(professor)
+        if professor not in formacao_anterior.professores:
+            formacao_anterior.professores.append(professor)
+
     db.session.commit()
 
 def remove_formacao(formacao):

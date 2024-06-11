@@ -11,3 +11,4 @@ class FormacaoRequestSchema(ma.SQLAlchemyAutoSchema):
     nome = fields.String(required=True)
     descricao = fields.String(required=True)
     cursos = fields.List(fields.Nested('CursoChema', only=("id", "title")))
+    professores = fields.List(fields.Integer(), load_only=True)
