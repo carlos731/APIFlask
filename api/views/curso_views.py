@@ -7,12 +7,15 @@ from ..services import curso_service, formacao_service
 from datetime import datetime
 from ..paginate import paginate
 from ..models.curso_model import Curso
+from flask_jwt_extended import jwt_required
 
 class CursoList(Resource):
+    @jwt_required()
     def get(self):
         cs = curso_schema.CursoSchema(many=True)
         return paginate(Curso, cs)
 
+    @jwt_required()
     def post(self):
         cs = curso_schema.CursoSchema()
         validate = cs.validate(request.json)
@@ -43,6 +46,8 @@ class CursoList(Resource):
             return make_response(jsonify(x), 201)
 
 class CursoDetails(Resource):
+
+    @jwt_required()
     def get(self, id):
         curso = curso_service.listar_curso_id(id)
         if curso is None:
@@ -50,7 +55,8 @@ class CursoDetails(Resource):
         cs = curso_schema.CursoSchema()
         return make_response(jsonify(cs.dump(curso)), 200)
 
-    def put(selfself, id):
+    @jwt_required()
+    def put(self, id):
         curso_bd = curso_service.listar_curso_id(id)
         if curso_bd is None:
             return make_response(jsonify("Curso não foi encontrado!"), 404)
@@ -76,12 +82,14 @@ class CursoDetails(Resource):
             curso_atualizado = curso_service.listar_curso_id(id)
             return make_response(jsonify(cs.dump(curso_atualizado)), 200)
 
+    @jwt_required()
     def delete(self, id):
         curso_bd = curso_service.listar_curso_id(id)
         if curso_bd is None:
             return make_response(jsonify("Curso não encontrado"), 400)
         curso_service.remove_curso(curso_bd)
         return make_response("Curso excluido com sucesso", 204)
+
 
 api.add_resource(CursoList, '/cursos')
 api.add_resource(CursoDetails, '/cursos/<int:id>')
