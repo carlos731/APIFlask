@@ -2,7 +2,7 @@ from api import ma
 from ..models import usuario_model
 from marshmallow import fields
 
-class ProfessorSchema(ma.SQLAlchemyAutoSchema):
+class UsuarioSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = usuario_model.Usuario
         load_instance = True
