@@ -8,6 +8,7 @@ from datetime import datetime
 from ..paginate import paginate
 from ..models.curso_model import Curso
 from flask_jwt_extended import jwt_required, get_jwt
+from ..decorator import admin_required
 
 class CursoList(Resource):
     @jwt_required()
@@ -15,11 +16,8 @@ class CursoList(Resource):
         cs = curso_schema.CursoSchema(many=True)
         return paginate(Curso, cs)
 
-    @jwt_required()
+    @admin_required # metodo customizado utilizando decorators no arquivo decorator.py
     def post(self):
-        claims = get_jwt() # recuperar o claims do login_views
-        if claims['roles'] != 'admin':
-            return make_response(jsonify(mensagem='Não é permitido esse recurso. Apenas administradores'), 403)
         cs = curso_schema.CursoSchema()
         validate = cs.validate(request.json)
         if validate:
@@ -58,11 +56,8 @@ class CursoDetails(Resource):
         cs = curso_schema.CursoSchema()
         return make_response(jsonify(cs.dump(curso)), 200)
 
-    @jwt_required()
+    @admin_required
     def put(self, id):
-        claims = get_jwt()  # recuperar o claims do login_views
-        if claims['roles'] != 'admin':
-            return make_response(jsonify(mensagem='Não é permitido esse recurso. Apenas administradores'), 403)
         curso_bd = curso_service.listar_curso_id(id)
         if curso_bd is None:
             return make_response(jsonify("Curso não foi encontrado!"), 404)
@@ -88,11 +83,8 @@ class CursoDetails(Resource):
             curso_atualizado = curso_service.listar_curso_id(id)
             return make_response(jsonify(cs.dump(curso_atualizado)), 200)
 
-    @jwt_required()
+    @admin_required
     def delete(self, id):
-        claims = get_jwt()  # recuperar o claims do login_views
-        if claims['roles'] != 'admin':
-            return make_response(jsonify(mensagem='Não é permitido esse recurso. Apenas administradores'), 403)
         curso_bd = curso_service.listar_curso_id(id)
         if curso_bd is None:
             return make_response(jsonify("Curso não encontrado"), 400)

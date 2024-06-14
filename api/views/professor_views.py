@@ -7,6 +7,7 @@ from ..services import professor_service
 from ..paginate import paginate
 from ..models.professor_model import Professor
 from flask_jwt_extended import jwt_required, get_jwt
+from ..decorator import admin_required
 
 class ProfessorList(Resource):
 
@@ -15,13 +16,8 @@ class ProfessorList(Resource):
         ps = professor_schema.ProfessorSchema(many=True)
         return paginate(Professor, ps)
 
-    @jwt_required()
+    @admin_required
     def post(self):
-        # verificar se usuário é admin ou não para fazer essa operação.
-        claims = get_jwt()  # recuperar o claims do login_views
-        if claims['roles'] != 'admin':
-            return make_response(jsonify(mensagem='Não é permitido esse recurso. Apenas administradores'), 403)
-
         ps = professor_schema.ProfessorSchema()
         validate = ps.validate(request.json)
         if validate:
@@ -45,13 +41,8 @@ class ProfessorDetails(Resource):
         ps = professor_schema.ProfessorSchema()
         return make_response(jsonify(ps.dump(professor)), 200)
 
-    @jwt_required()
+    @admin_required
     def put(selpself, id):
-        # verificar se usuário é admin ou não para fazer essa operação.
-        claims = get_jwt()  # recuperar o claims do login_views
-        if claims['roles'] != 'admin':
-            return make_response(jsonify(mensagem='Não é permitido esse recurso. Apenas administradores'), 403)
-
         professor_bd = professor_service.listar_professor_id(id)
         if professor_bd is None:
             return make_response(jsonify("Professor não foi encontrado!"), 404)
@@ -67,13 +58,8 @@ class ProfessorDetails(Resource):
             professor_atualizado = professor_service.listar_professor_id(id)
             return make_response(jsonify(ps.dump(professor_atualizado)), 200)
 
-    @jwt_required()
+    @admin_required
     def delete(self, id):
-        # verificar se usuário é admin ou não para fazer essa operação.
-        claims = get_jwt()  # recuperar o claims do login_views
-        if claims['roles'] != 'admin':
-            return make_response(jsonify(mensagem='Não é permitido esse recurso. Apenas administradores'), 403)
-
         professor_bd = professor_service.listar_professor_id(id)
         if professor_bd is None:
             return make_response(jsonify("Professor não encontrado"), 400)

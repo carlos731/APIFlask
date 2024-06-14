@@ -7,6 +7,7 @@ from ..services import formacao_service, professor_service
 from ..paginate import paginate
 from ..models.formacao_model import Formacao
 from flask_jwt_extended import jwt_required, get_jwt
+from ..decorator import admin_required
 
 class FormacaoList(Resource):
 
@@ -15,13 +16,8 @@ class FormacaoList(Resource):
         fs = formacao_schema.FormacaoSchema(many=True)
         return paginate(Formacao, fs)
 
-    @jwt_required()
+    @admin_required
     def post(self):
-        # verificar se usuário é admin ou não para fazer essa operação.
-        claims = get_jwt()  # recuperar o claims do login_views
-        if claims['roles'] != 'admin':
-            return make_response(jsonify(mensagem='Não é permitido esse recurso. Apenas administradores'), 403)
-
         fs = formacao_request_schema.FormacaoRequestSchema()
         validate = fs.validate(request.json)
         if validate:
@@ -62,13 +58,8 @@ class FormacaoDetails(Resource):
         fs = formacao_schema.FormacaoSchema()
         return make_response(jsonify(fs.dump(formacao)), 200)
 
-    @jwt_required()
+    @admin_required
     def put(self, id):
-        # verificar se usuário é admin ou não para fazer essa operação.
-        claims = get_jwt()  # recuperar o claims do login_views
-        if claims['roles'] != 'admin':
-            return make_response(jsonify(mensagem='Não é permitido esse recurso. Apenas administradores'), 403)
-
         formacao_bd = formacao_service.listar_formacao_id(id)
         if formacao_bd is None:
             return make_response(jsonify("Formacão não foi encontrada!"), 404)
@@ -104,13 +95,8 @@ class FormacaoDetails(Resource):
 
             return make_response(jsonify(fs.dump(formacao_atualizada)), 200)
 
-    @jwt_required()
+    @admin_required
     def delete(self, id):
-        # verificar se usuário é admin ou não para fazer essa operação.
-        claims = get_jwt()  # recuperar o claims do login_views
-        if claims['roles'] != 'admin':
-            return make_response(jsonify(mensagem='Não é permitido esse recurso. Apenas administradores'), 403)
-
         formacao_bd = formacao_service.listar_formacao_id(id)
         if formacao_bd is None:
             return make_response(jsonify("Formacão não encontrada"), 400)
