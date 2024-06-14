@@ -40,13 +40,13 @@ class LoginList(Resource):
                 )
 
                 return make_response(jsonify({
-                    'access_token':access_token,
-                    'refresh_token':refresh_token,
-                    'message':'Login realizado com sucesso'
+                    'access_token': access_token,
+                    'refresh_token': refresh_token,
+                    'message': 'Login realizado com sucesso'
                 }), 200)
 
             return make_response(jsonify({
-                'message':'Credenciais estão inválidas'
+                'message': 'Credenciais estão inválidas'
             }), 401)
 
 

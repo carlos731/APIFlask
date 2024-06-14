@@ -7,7 +7,7 @@ from ..services import curso_service, formacao_service
 from datetime import datetime
 from ..paginate import paginate
 from ..models.curso_model import Curso
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt
 
 class CursoList(Resource):
     @jwt_required()
@@ -17,6 +17,9 @@ class CursoList(Resource):
 
     @jwt_required()
     def post(self):
+        claims = get_jwt() # recuperar o claims do login_views
+        if claims['roles'] != 'admin':
+            return make_response(jsonify(mensagem='Não é permitido esse recurso. Apenas administradores'), 403)
         cs = curso_schema.CursoSchema()
         validate = cs.validate(request.json)
         if validate:
@@ -57,6 +60,9 @@ class CursoDetails(Resource):
 
     @jwt_required()
     def put(self, id):
+        claims = get_jwt()  # recuperar o claims do login_views
+        if claims['roles'] != 'admin':
+            return make_response(jsonify(mensagem='Não é permitido esse recurso. Apenas administradores'), 403)
         curso_bd = curso_service.listar_curso_id(id)
         if curso_bd is None:
             return make_response(jsonify("Curso não foi encontrado!"), 404)
@@ -84,6 +90,9 @@ class CursoDetails(Resource):
 
     @jwt_required()
     def delete(self, id):
+        claims = get_jwt()  # recuperar o claims do login_views
+        if claims['roles'] != 'admin':
+            return make_response(jsonify(mensagem='Não é permitido esse recurso. Apenas administradores'), 403)
         curso_bd = curso_service.listar_curso_id(id)
         if curso_bd is None:
             return make_response(jsonify("Curso não encontrado"), 400)
