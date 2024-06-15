@@ -6,7 +6,8 @@ def cadastrar_usuario(usuario):
         nome=usuario.nome,
         email=usuario.email,
         senha=usuario.senha,
-        is_admin=usuario.is_admin
+        is_admin=usuario.is_admin,
+        api_key=usuario.api_key
     )
     usuario_bd.encriptar_senha()
     db.session.add(usuario_bd)
