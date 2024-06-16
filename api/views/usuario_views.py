@@ -20,6 +20,10 @@ class UsuarioList(Resource):
             is_admin = request.json["is_admin"]
             api_key = str(uuid.uuid4())
 
+            usuario_existente = usuario_service.listar_usuario_email(email)
+            if usuario_existente:
+                return make_response(jsonify(mensagem=f'Um usuário com o email {email} já existe!'), 409)
+
             novo_usuario = usuario.Usuario(
                 nome=nome,
                 email=email,

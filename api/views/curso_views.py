@@ -8,10 +8,10 @@ from datetime import datetime
 from ..paginate import paginate
 from ..models.curso_model import Curso
 from flask_jwt_extended import jwt_required, get_jwt
-from ..decorator import admin_required
+from ..decorator import admin_required, api_key_required
 
 class CursoList(Resource):
-    @jwt_required()
+    @api_key_required
     def get(self):
         cs = curso_schema.CursoSchema(many=True)
         return paginate(Curso, cs)
